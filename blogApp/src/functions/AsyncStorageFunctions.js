@@ -31,6 +31,7 @@ const getData = async (key) => {
     alert(error);
   }
 };
+
 const getDataJSON = async (key) => {
   try {
     let data = await AsyncStorage.getItem(key);
@@ -54,4 +55,17 @@ const removeData = async (key) => {
   }
 };
 
-export { storeData, storeDataJSON, getData, getDataJSON, removeData };
+const addPost = async (key, value) => {
+  try {
+    let val = await AsyncStorage.getItem(key);
+    val = JSON.parse(val);
+    val.push(value);
+    const jsonValue = JSON.stringify(val);
+    await AsyncStorage.setItem(key, jsonValue);
+    alert('Data Added Successfully!');
+  } catch (error) {
+    alert(error);
+  }
+};
+
+export { storeDataJSON, getDataJSON, removeData, addPost };
