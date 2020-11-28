@@ -1,8 +1,10 @@
 import React from "react";
 import { createMaterialBottomTabNavigator } from "@react-navigation/material-bottom-tabs";
 import { Entypo, AntDesign, Ionicons } from "@expo/vector-icons";
-import HomeScreen from "./../screens/HomeScreen";
+// import HomeScreen from "./../screens/HomeScreen";
 import NotificationScreen from "./../screens/NotificationScreen";
+import HomeStackScreen from "./../navigation/HomeStack";
+
 
 const HomeTab = createMaterialBottomTabNavigator();
 
@@ -11,7 +13,7 @@ const HomeTabScreen = () => {
     <HomeTab.Navigator initialRouteName="Home">
       <HomeTab.Screen
         name="Home"
-        component={HomeScreen}
+        component={HomeStackScreen}
         options={{
           tabBarLabel: "Home",
           tabBarIcon: ({ focused }) =>
