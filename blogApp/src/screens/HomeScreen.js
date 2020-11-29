@@ -50,7 +50,7 @@ const HomeScreen = (props) => {
                 let newpost = {
                   postid : auth.CurrentUser.email + moment().format('YYYY-MM-DD hh:mm:ss a'),
                   user: auth.CurrentUser,
-                  time: moment().format('DD MMM, YYYY'),
+                  time: moment().format('MMM DD')+ ' at' + moment().format(' hh:mm A'),
                   body: post,
                 };
                 if (posts == undefined) {
@@ -78,7 +78,7 @@ const HomeScreen = (props) => {
               return(
                 <PostCard
                   author= {item.user.name}
-                  title= {'Posted on ' + item.time}
+                  time= {item.time}
                   body={item.body}
                   navigation={props.navigation}
                   post={item}

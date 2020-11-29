@@ -12,9 +12,11 @@ function CommentCard(props) {
           icon={{name: 'user', type: 'font-awesome', color: 'black'}}
           activeOpacity={1}
         />
-        <Text h4Style={{paddingHorizontal: 10}} h4>
-          {props.name}
-        </Text>
+        <View>
+          <Text h4Style={{paddingHorizontal: 10}} h4>
+            {props.name}
+          </Text>
+        </View>
       </View>
       <Text style={{fontStyle: 'italic', fontSize: 10, textAlign: 'right'}}>
         {props.time}

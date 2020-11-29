@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   StyleSheet,
@@ -6,12 +6,12 @@ import {
   ActivityIndicator,
   ScrollView,
 } from 'react-native';
-import {Text, Card, Button, Avatar, Input} from 'react-native-elements';
+import { Text, Card, Button, Avatar, Input } from 'react-native-elements';
 import Entypo from 'react-native-vector-icons/Entypo';
 import moment from 'moment';
 import uuid from 'uuid-random';
 
-import {AuthContext} from '../providers/AuthProvider';
+import { AuthContext } from '../providers/AuthProvider';
 import HeaderHome from './../components/Header';
 import CommentCard from '../components/CommentCard';
 import {
@@ -26,6 +26,7 @@ const PostScreen = (props) => {
   const [comment, setComment] = useState('');
   const [comments, setComments] = useState([]);
   const [postcomments, setPostComments] = useState([]);
+  const [notifications, setNotifications] = useState([]);
   const [loading, setLoading] = useState(false);
   const input = React.createRef();
 
@@ -41,8 +42,13 @@ const PostScreen = (props) => {
     setLoading(false);
   };
 
+  const loadNotifications = async () => {
+    setNotifications(await getDataJSON('Notifications'));
+  };
+
   useEffect(() => {
     loadComments();
+    loadNotifications();
   }, []);
 
   return (
@@ -57,22 +63,24 @@ const PostScreen = (props) => {
           <Card>
             <View style={styles.authorStyle}>
               <Avatar
-                containerStyle={{backgroundColor: '#ffab91'}}
+                containerStyle={{ backgroundColor: '#ffab91' }}
                 rounded
-                icon={{name: 'user', type: 'font-awesome', color: 'black'}}
+                icon={{ name: 'user', type: 'font-awesome', color: 'black' }}
                 activeOpacity={1}
               />
-              <Text h4Style={{padding: 10}} h4>
-                {info.user.name}
-              </Text>
+              <View>
+                <Text h4Style={{ paddingHorizontal: 10, paddingBottom: 5 }} h4>
+                  {info.user.name}
+                </Text>
+                <Text style={{ fontStyle: 'italic', fontSize: 12, paddingHorizontal: 10,}}>
+                  {info.time}
+                </Text>
+              </View>
             </View>
-            <Text style={{fontStyle: 'italic', fontSize: 12}}>
-              {'  '}
-              Posted on {info.time}
-            </Text>
+            
             <Text style={styles.textstyle}>{info.body}</Text>
             <Card.Divider />
-            <Text style={{paddingBottom: 7}}>
+            <Text style={{ paddingBottom: 7 }}>
               {0} Likes, {postcomments.length} Comments.
             </Text>
             <Card.Divider />
@@ -90,26 +98,41 @@ const PostScreen = (props) => {
               title="Comment"
               onPress={function () {
                 if (comment != '') {
-                  let newcomment = {
+                  let newComment = {
                     postid: info.postid,
                     commentid: uuid(),
                     user: auth.CurrentUser,
-                    time: moment().format('DD MMM, YYYY'),
+                    time: moment().format('DD MMM, YYYY ') + 'at' + moment().format(' hh:mm A'),
                     body: comment,
                   };
-                  
+                  let newNotification = {
+                    notificationid: uuid(),
+                    type: 'comment',
+                    author: auth.CurrentUser,
+                    postid: info.postid,
+                    postauthor: info.user,
+                    text: auth.CurrentUser.name,
+                  };
+
                   if (postcomments == undefined) {
-                    setPostComments([newcomment]);
+                    setPostComments([newComment]);
                   } else {
-                    setPostComments([...postcomments, newcomment]);
+                    setPostComments([...postcomments, newComment]);
                   }
-                  
+
                   if (comments == undefined) {
-                    setComments([newcomment]);
-                    storeDataJSON('Comments', [newcomment]);
+                    setComments([newComment]);
+                    storeDataJSON('Comments', [newComment]);
                   } else {
-                    setComments([...comments, newcomment]);
-                    addDataJSON('Comments', newcomment);
+                    setComments([...comments, newComment]);
+                    addDataJSON('Comments', newComment);
+                  }
+                  if (notifications == undefined) {
+                    setNotifications([newNotification]);
+                    storeDataJSON('Notifications', [newNotification]);
+                  } else {
+                    setNotifications([...notifications, newNotification]);
+                    addDataJSON('Notifications', newNotification);
                   }
                 }
                 input.current.clear();
@@ -122,17 +145,17 @@ const PostScreen = (props) => {
               animating={loading}
             />
           </Card>
-          
+
           <FlatList
             data={postcomments}
             inverted={true}
             scrollsToTop={true}
             keyExtractor={(item) => item.commentid}
-            renderItem={({item}) => {
+            renderItem={({ item }) => {
               return (
                 <CommentCard
                   name={item.user.name}
-                  time={'Commented on ' + item.time}
+                  time={item.time}
                   comment={item.body}
                 />
               );

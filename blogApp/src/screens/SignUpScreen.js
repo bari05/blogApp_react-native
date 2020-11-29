@@ -9,6 +9,8 @@ const SignUpScreen = (props) => {
   const [SID, setSID] = useState("");
   const [Email, setEmail] = useState("");
   const [Password, setPassword] = useState("");
+  const [DOB, setDOB]=useState("");
+  const [Address, setAddress]=useState("");
 
   return (
     <View style={styles.viewStyle}>
@@ -46,6 +48,22 @@ const SignUpScreen = (props) => {
           }}
         />
 
+        <Input
+          placeholder="Date of Birth"
+          leftIcon={<FontAwesome name="calendar" size={24} color="black" />}
+          onChangeText={function (currentInput) {
+            setDOB(currentInput);
+          }}
+        />
+
+        <Input
+          placeholder="Address"
+          leftIcon={<FontAwesome name="map-marker" size={24} color="black" />}
+          onChangeText={function (currentInput) {
+            setAddress(currentInput);
+          }}
+        />
+
         <Button
           icon={<AntDesign name="user" size={24} color="white" />}
           title="  Sign Up!"
@@ -56,6 +74,8 @@ const SignUpScreen = (props) => {
               sid: SID,
               email: Email,
               password: Password,
+              dob: DOB,
+              address: Address,
             };
             storeDataJSON(Email, currentUser);
             props.navigation.navigate("SignIn");

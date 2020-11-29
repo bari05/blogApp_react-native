@@ -1,58 +1,66 @@
-import React, { useState } from "react";
-import { View, StyleSheet, AsyncStorage } from "react-native";
-import { Text, Card, Button, Avatar, Header } from "react-native-elements";
-import { AuthContext } from "../providers/AuthProvider";
+import React, { useEffect, useState, useContext } from 'react';
+import { StyleSheet, FlatList, ActivityIndicator, ScrollView, } from 'react-native';
+import { useIsFocused } from '@react-navigation/native';
+import HeaderHome from './../components/Header';
+import { AuthContext } from '../providers/AuthProvider';
+import NotificationCard from '../components/NotificationCard';
+import { getDataJSON } from '../functions/AsyncStorageFunctions';
+
 const NotificationScreen = (props) => {
+  const [notifications, setNotifications] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const user = useContext(AuthContext);
+
+  const loadNotifications = async () => {
+    setLoading(true);
+    let allnotifications = await getDataJSON('Notifications');
+    if (allnotifications != undefined) {
+      setNotifications(
+        allnotifications.filter((e) =>
+          e.postauthor.email == user.CurrentUser.email &&
+          e.author.email != user.CurrentUser.email,
+        ),
+      );
+    }
+    setLoading(false);
+  };
+
+  const isFocused = useIsFocused();
+
+  useEffect(() => {
+    loadNotifications();
+  }, [isFocused]);
+
   return (
-    <AuthContext.Consumer>
-      {(auth) => (
-        <View style={styles.viewStyle}>
-          <Header
-            leftComponent={{
-              icon: "menu",
-              color: "#fff",
-              onPress: function () {
-                props.navigation.toggleDrawer();
-              },
-            }}
-            centerComponent={{ text: "The Office", style: { color: "#fff" } }}
-            rightComponent={{
-              icon: "lock-outline",
-              color: "#fff",
-              onPress: function () {
-                auth.setIsLoggedIn(false);
-                auth.setCurrentUser({});
-              },
-            }}
-          />
-          <Card>
-            <View style={{ flexDirection: "row", alignItems: "center" }}>
-              <Avatar
-                containerStyle={{ backgroundColor: "cyan" }}
-                rounded
-                icon={{
-                  name: "thumbs-o-up",
-                  type: "font-awesome",
-                  color: "black",
-                }}
-                activeOpacity={1}
-              />
-              <Text style={{ paddingHorizontal: 10 }}>
-                Pam Beesley Liked Your Post.
-              </Text>
-            </View>
-          </Card>
-        </View>
-      )}
-    </AuthContext.Consumer>
+    <ScrollView style={styles.viewStyle}>
+      <HeaderHome
+        DrawerFunction={() => {
+          props.navigation.toggleDrawer();
+        }}
+      />
+
+      <ActivityIndicator size={'large'} color={'red'} animating={loading} />
+
+      <FlatList
+        data={notifications}
+        inverted={true}
+        scrollsToTop={true}
+        keyExtractor={(item) => item.notificationid}
+        renderItem={({ item }) => {
+          return (
+            <NotificationCard
+              navigation={props.navigation}
+              postid={item.postid}
+              notifier={item.author.name}
+            />
+          );
+        }}
+      />
+    </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
-  textStyle: {
-    fontSize: 30,
-    color: "blue",
-  },
   viewStyle: {
     flex: 1,
   },

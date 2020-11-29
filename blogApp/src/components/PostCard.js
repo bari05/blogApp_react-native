@@ -42,16 +42,20 @@ const PostCard = (props) => {
           icon={{ name: "user", type: "font-awesome", color: "black" }}
           activeOpacity={1}
         />
-        <Text h4Style={{ padding: 10 }} h4>
-          {props.author}
-        </Text>
+        <View>
+          <Text h4Style={{ paddingHorizontal: 10, paddingBottom: 5 }} h4>
+            {props.author}
+          </Text>
+          <Text style={{ fontStyle: 'italic', fontSize: 12, paddingHorizontal: 10, }}>
+            {props.time}
+          </Text>
+        </View>
+
       </View>
-      <Text style={{ fontStyle: "italic" }}> 
-        {props.title}
-      </Text>
+      
       <Text
         style={{
-          paddingVertical: 10,
+          paddingVertical: 10, fontSize:16,
         }}
       >
         {props.body}

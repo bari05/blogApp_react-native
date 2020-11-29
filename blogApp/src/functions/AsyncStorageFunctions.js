@@ -3,7 +3,7 @@ import { AsyncStorage } from "react-native";
 const storeData = async (key, value) => {
   try {
     await AsyncStorage.setItem(key, value);
-    alert("Data STored Successfully!");
+    // alert("Data STored Successfully!");
   } catch (error) {
     alert(error);
   }
@@ -13,7 +13,7 @@ const storeDataJSON = async (key, value) => {
   try {
     const jsonValue = JSON.stringify(value);
     await AsyncStorage.setItem(key, jsonValue);
-    alert("Data STored Successfully!");
+    // alert("Data STored Successfully!");
   } catch (error) {
     alert(error);
   }
@@ -25,7 +25,7 @@ const getData = async (key) => {
     if (data != null) {
       return data;
     } else {
-      alert("No data with this key!");
+      // alert("No data with this key!");
     }
   } catch (error) {
     alert(error);
@@ -39,7 +39,7 @@ const getDataJSON = async (key) => {
       const jsonData = JSON.parse(data);
       return jsonData;
     } else {
-      alert("No data with this key!");
+      // alert("No data with this key!");
     }
   } catch (error) {
     alert(error);
@@ -49,7 +49,7 @@ const getDataJSON = async (key) => {
 const removeData = async (key) => {
   try {
     await AsyncStorage.removeItem(key);
-    alert("Data Removed Successfully");
+    // alert("Data Removed Successfully");
   } catch (error) {
     alert(error);
   }
@@ -62,7 +62,7 @@ const addDataJSON = async (key, value) => {
     data.push(value);
     const jsonValue = JSON.stringify(data);
     await AsyncStorage.setItem(key, jsonValue);
-    alert('Data Added Successfully!');
+    // alert('Data Added Successfully!');
   } catch (error) {
     alert(error);
   }
